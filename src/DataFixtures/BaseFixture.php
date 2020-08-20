@@ -54,7 +54,7 @@ abstract class BaseFixture extends Fixture
 
     /**
      * Enregistrer plusieurs entités 
-     * @param init $count                      nombre d'entitéa générer 
+     * @param init $count                      nombre d'entité générer 
      * @param string $groupName             nom du groupe de références
      * @param callable $factory             fonction qui génére 1 entité
      */

@@ -1,0 +1,47 @@
+{% extends "_template.html.twig" %}
+
+
+{% block title %} Album: {{ record.title }} {% endblock %}
+
+
+
+
+
+
+{% block content %}
+
+        <section class="section">
+            <div class="columns">
+                <div class="column is-two-fifth">
+                    <figure class="image is-1by1">
+                        <img src="https://loremflickr.com/1024/1024/album,music/all?lock={{ record.id }}">
+                    </figure>
+                </div>
+
+                <div class="column">
+                    <h1 class="title has-text-primary">
+                        {{ record.title }}
+                    </h1>
+                    <h2 class="subtitle">
+                        Artiste:
+                        <a href="{{ path('artist_page', {id:record.artist.id})}}">
+                            {{ record.artist.name }}
+                        </a>
+                    </h2>
+
+                    <p class="content">
+                        {{ record.description }}
+                    </p>
+
+                    <hr>
+                    <h6 class="is-size-7">
+                        <span class="icon has-text-info"><i class="fas fa-info-circle"></i></span>
+                        <span>Sorti le {{ record.releasedAt|date('d/m/Y') }}</span>
+                    </h6>
+                </div>
+            </div>
+        </section>
+
+
+
+{% endblock %}

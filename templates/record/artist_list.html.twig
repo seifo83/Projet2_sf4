@@ -21,11 +21,12 @@
                             <div class="media-content">
                                 <div class="content">
                                     <p>
-                                        <a href="#" class="has-text-primary">
+                                        <a href="{{ path('artist_page', {id: artist.id})}}" class="has-text-primary">
                                             <strong>{{artist.name}}</strong>
                                         </a>
                                         <br>
-                                        {{artist.description|slice(0, 80)}}
+                                        <small>Albums: {{ artist.records|length }}</small>
+                                        {{artist.description|slice(0, 50)}}
                                     </p>
                                 </div>
                             </div>
