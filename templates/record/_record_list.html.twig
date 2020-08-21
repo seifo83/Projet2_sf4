@@ -17,6 +17,10 @@
                         <small>{{ record.releasedAt|date('d/m/Y')}}</small>
                         <br>
                         <small>
+                            <strong>Label:</strong>
+                            <a href="{{ path('label_page', {id: record.label.id})}}">{{ record.label.name}}</a>
+                        </small><br>
+                        <small>
                             <strong>Artiste:</strong>
                             <a href="{{ path('artist_page', {id: record.artist.id})}}">{{ record.artist.name}}</a>
                         </small><br>

@@ -21,8 +21,12 @@
                 <div class="column">
                     <h1 class="title has-text-primary">
                         {{ record.title }}
-                    </h1>
+                    </h1><br>
                     <h2 class="subtitle">
+                        Label:
+                        <a href="{{ path('label_page', {id:record.label.id})}}">
+                            {{ record.label.name }}
+                        </a><br>
                         Artiste:
                         <a href="{{ path('artist_page', {id:record.artist.id})}}">
                             {{ record.artist.name }}

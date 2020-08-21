@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Artist;
+use App\Entity\Label;
 use App\Entity\Record;
 use App\Repository\ArtistRepository;
+use App\Repository\LabelRepository;
 use App\Repository\RecordRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,11 +33,22 @@ class RecordController extends AbstractController
     public function artistPage(Artist $artist)
     {
         //dd($artist);
-        return $this->render('record/artist_apge.html.twig', [
+        return $this->render('record/artist_page.html.twig', [
             'artist' => $artist
 
         ]);
 
+    }
+
+     /**
+     * liste des albums
+     * @Route("/record", name="record_list")
+     */
+    public function recordList(RecordRepository $repository)
+    {
+        return $this->render('record/record_list.html.twig', [
+            'record_list' => $repository->findAll(),
+        ]);
     }
 
 
@@ -74,9 +87,31 @@ class RecordController extends AbstractController
             'record_news' => $repository->findNews(),
         ]);
 
+    }
 
 
+    /**
+     * liste Label
+     * @Route("/label", name="label_list")
+     */
+    public function labelList(LabelRepository $repository)
+    {
+        return $this->render('record/label_list.html.twig', [
+            'label_list' => $repository->findAll(),
+        ]);
+    }
 
+    /**
+     * Page label
+     * @Route("/label/{id}", name="label_page")
+     */
+    public function labelPage(Label $label)
+    {
+        //dd($artist);
+        return $this->render('record/label_page.html.twig', [
+            'label' => $label
+
+        ]);
 
     }
 

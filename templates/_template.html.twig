@@ -24,13 +24,19 @@
    
            <div id="navbarBasicExample" class="navbar-menu">
                <div class="navbar-start">
+                <a class="navbar-item" href="{{ path('record_news')}}">
+                    Nouveautés
+                </a>
                    <a class="navbar-item" href="{{path('artist_list')}}">
                        Artistes
                    </a>
    
-                   <a class="navbar-item" href="{{ path('record_news')}}">
-                       Nouveautés
+                   <a class="navbar-item" href="{{path('record_list')}}">
+                      Records
                    </a>
+                   <a class="navbar-item" href="{{ path('label_list')}}">
+                    Labels
+                </a>
                </div>
    
                <div class="navbar-end">
