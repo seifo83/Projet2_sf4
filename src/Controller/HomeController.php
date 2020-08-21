@@ -12,7 +12,7 @@ class HomeController extends AbstractController
      */
     public function index()
     {
-        throw new \Exception('Je suis un message d erreur !');
+        //throw new \Exception('Je suis un message d erreur !');
         return $this-> render('home/index.html.twig');
 
     }

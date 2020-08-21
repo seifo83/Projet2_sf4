@@ -1,0 +1,39 @@
+
+{% extends '_template.html.twig' %}
+
+{% block title %} Labels {% endblock %}
+
+{% block content %}
+
+    <div class="section">
+        <h1 class="title"> Labels: {{ label_list|length }} </h1>
+        <div class="columns is-multiline">
+            {% for label in label_list %}
+            
+                <div class="column is-one-third">
+                    <div class="box">
+                        <article class="media">
+                            <div class="media-left">
+                                <figure class="image is-128x128">
+                                    <img src="https://loremflickr.com/256/256/label,music/all?lock={{label.id}}" alt="Image">
+                                </figure>
+                            </div>
+                            <div class="media-content">
+                                <div class="content">
+                                    <p>
+                                        <a href="{{ path('label_page', {id: label.id})}}" class="has-text-primary">
+                                            <strong>{{label.name}}</strong>
+                                        </a><br>
+                                        <small>Date de création: {{ label.releasedAt|date('Y')}}</small><br>
+                                        {{label.description|slice(0, 50)}}
+                                    </p>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            {% endfor %}
+    </div>
+    </div>
+
+{% endblock %}
