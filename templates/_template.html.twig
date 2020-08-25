@@ -42,12 +42,33 @@
                <div class="navbar-end">
                    <div class="navbar-item">
                        <div class="buttons">
-                           <a class="button is-primary is-small" href="#">
-                               <strong>Inscription</strong>
+                            {#  au lieu app.user on peut utiliser Isgranted #} 
+                        {% if app.user %}
+                            <a class="button is-primary is-small" href="#">
+                                <span class="icon"><i class="fas fa-user-circle"></i></span>
+                                <strong>{{ app.user.pseudo }}</strong>
+                            </a>
+                           <a class="button is-light is-small" href="{{path('app_login')}}">
+                               <strong>Déconnexion</strong>
+
                            </a>
-                           <a class="button is-light is-small" href="#">
-                               Connexion
-                           </a>
+
+                        {% else %}
+                            <a class="button is-primary is-small" href="#">
+                                <strong>Inscription</strong>
+                            </a>
+                            <a class="button is-light is-small" href="{{path('app_login')}}">
+                                Connexion
+                            </a>
+                        {% endif %}
+
+                        {% if is_granted("ROLE_EDITOR") %}
+                            <a class="button is-light is-small" href="{{path('admin_dashboard')}}">
+                                <span class="icon"><i class="fas fa-user-circle"></i></span>
+                                <strong>Back-Office</strong>
+                            </a>
+                        {% endif %}
+ 
                        </div>
                    </div>
    
