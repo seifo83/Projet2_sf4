@@ -55,13 +55,13 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     public function getCredentials(Request $request)
     {
         $credentials = [
-            'email' => $request->request->get('email'),
+            'username' => $request->request->get('username'),
             'password' => $request->request->get('password'),
             'csrf_token' => $request->request->get('_csrf_token'),
         ];
         $request->getSession()->set(
             Security::LAST_USERNAME,
-            $credentials['email']
+            $credentials['username']
         );
 
         return $credentials;
@@ -72,16 +72,33 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
+        //dd($credentials);
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
         if (!$this->csrfTokenManager->isTokenValid($token)) {
             throw new InvalidCsrfTokenException();
         }
 
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
+        /** @var UserRepository $repository */
+        $repository = $this->entityManager->getRepository(User::class);
+        $user = $repository->findOneByUsername($credentials['username']);
+
+        /**    Méthode de Aymeric
+         * 
+         * 
+
+                    $user = $this->entityManager->getRepository(User::class)->findOneBy(['pseudo' => $credentials['username']]);
+                          ?? $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['username']]);
+                          (si le premier résultat  rendre null (?? sinon) il lance une 2 eme requete 
+         */
+
+         
+
+        //dd($user);
+        //$this->repos['notif']->findBy(array('status' => array(1, 2, 3)));
 
         if (!$user) {
             // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Adresse Email inValide.');
+            throw new CustomUserMessageAuthenticationException('Adresse Email ou Pseudo inValide.');
         }
 
         return $user;
