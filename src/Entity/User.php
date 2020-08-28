@@ -52,6 +52,11 @@ class User implements UserInterface
      */
     private $token;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Note::class, mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $note;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -162,6 +167,24 @@ class User implements UserInterface
     public function renewToken(): self
     {
         $this->token = bin2hex(random_bytes(16));
+
+        return $this;
+    }
+
+    public function getNote(): ?Note
+    {
+        return $this->note;
+    }
+
+    public function setNote(?Note $note): self
+    {
+        $this->note = $note;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newUser = null === $note ? null : $this;
+        if ($note->getUser() !== $newUser) {
+            $note->setUser($newUser);
+        }
 
         return $this;
     }
