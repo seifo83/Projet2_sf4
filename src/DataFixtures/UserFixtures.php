@@ -29,8 +29,9 @@ class UserFixtures extends BaseFixture
                 ->setEmail('admin' . $num . '@kritik.fr')
                 ->setRoles(['ROLE_ADMIN'])
                 ->setPassword($password)
-                ->setPseudo('admin_' . $num)
-                //->setPseudo($this->faker->unique()->userName) pour creer des USER name aléatoir
+                ->setPseudo('admin_' . $num)  //->setPseudo($this->faker->unique()->userName) pour creer des USER name aléatoir
+                ->confirmAccount()
+                ->renewToken()
             ;
         });
 
@@ -43,6 +44,8 @@ class UserFixtures extends BaseFixture
                 ->setEmail('user' . $num . '@kritik.fr')
                 ->setPassword($password)
                 ->setPseudo('user_' . $num)
+                ->confirmAccount()
+                ->renewToken()
             ;
         });
     }
