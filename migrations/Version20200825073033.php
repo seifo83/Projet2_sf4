@@ -33,6 +33,7 @@ final class Version20200825073033 extends AbstractMigration
         //3.  Remettre la colone en NOT NULL 
         $this->addSql('ALTER TABLE user MODIFY pseudo VARCHAR(30) NOT NULL');
 
+        //4.Rendre la colone unique
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D64986CC499D ON user (pseudo)');
     }
 

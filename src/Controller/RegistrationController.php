@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Form\RegistrationFormType;
+use App\Service\EmailSender;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,10 +15,18 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegistrationController extends AbstractController
 {
+    private $manger;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->manager = $entityManager;
+    }
+
+
     /**
      * @Route("/register", name="app_register")
      */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager ): Response
+    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, EmailSender $emailSender ): Response
     {
         /**
          * $user = new User();
@@ -39,6 +49,10 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            /* cette méthode était au début pour cerrer le formulaire d'inscription 
+                Remarque on a modifier la méthode par la mméthode 2 puisque on abesoin d'envoyer un mail de confirmation
+                regade la methode 2
+
             $user = $form->getData();
 
             // encode the plain password
@@ -47,15 +61,31 @@ class RegistrationController extends AbstractController
                     $user,
                     $form->get('plainPassword')->getData()
                 )
-            ); 
+            );  
+            */
+
+            //méthode 2 pour un formulaire avec confirmation de mail
+            //récupération des données de formuliare(entité user + mot de passe)
+            $user = $form->getData();
+            $password = $form->get('plainPassword')->getData();
+
+            //hash du mot de passe et création du jeton 
+            $user->setPassword($passwordEncoder->encodePassword($user, $password))
+                ->renewToken()
+            
+            ;
 
             //$entityManager = $this->getDoctrine()->getManager(); => cette ligne est remplacer par faire appel a EntityManagerInterface dans la methode
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $this->manager->persist($user);
+            $this->manager->flush();
             // do anything else you need here, like send an email
 
 
-            $this->addFlash('success', 'Vous avez bien été inscrit !');
+            //Envoi de l'email de confirmation
+            $emailSender->sendAccountConfirmationEmail($user);
+
+
+            $this->addFlash('success', 'Vous avez bien été inscrit ! Un email de confirmation vous a été envoyé.');
 
             return $this->redirectToRoute('home');
         }
@@ -64,4 +94,42 @@ class RegistrationController extends AbstractController
             'registrationForm' => $form->createView(),
         ]);
     }
+
+    /**
+     * Confirmation du compte (via un lien envoyé par email)
+     * @Route("/confirm-account/{id<\d+>}/{token}", name="account_confirmation")
+     */
+    public function confirmAccount($id, $token, UserRepository $repository)
+    {   
+        //Rechercher de l'utilisateur
+        $user = $repository->findOneBY([
+            'id' => $id,
+            'token' => $token,
+        ]);
+
+        if($user === null){
+            $this ->addFlash('danger', 'Utilisateur ou jeton invalide. ');
+            return $this->redirectToRoute('app_login');
+        }
+
+        //Utilisateur trouvé: confirmation du compte
+        $user
+            ->confirmAccount()
+            ->renewToken()
+        ;
+
+        $this->manager->flush();
+
+        $this->addFlash('success', 'Votre compte est confirmé, vous pouvez vous connecter !');
+        return $this->redirectToRoute('app_login');
+
+    }
+
+
+
+
+
+
+
+
 }
