@@ -44,7 +44,7 @@
                        <div class="buttons">
                             {#  au lieu app.user on peut utiliser Isgranted #} 
                         {% if app.user %}
-                            <a class="button is-primary is-small" href="#">
+                            <a class="button is-primary is-small" href="{{path('account_profil')}}">
                                 <span class="icon"><i class="fas fa-user-circle"></i></span>
                                 <strong>{{ app.user.pseudo }}</strong>
                             </a>

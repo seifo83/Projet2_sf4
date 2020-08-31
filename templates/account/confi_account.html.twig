@@ -1,0 +1,26 @@
+{% extends "_template.html.twig" %}
+
+{% block title %}Modifier Profil{% endblock %}
+
+{% block content %}
+  
+    <div class="section">
+        <h1 class="title">Modifier Votre Profil</h1>
+    
+
+        {{ form_start(account_profil) }}
+            
+        {{ form_row(account_profil.email, {label: "Adresse Email:"}) }}
+
+            {{ form_row(account_profil.pseudo, {label: "Pseudo:"}) }}
+
+            <button type="submit" class="button is-primary is-fullwidth">Valider</button>
+
+        {{ form_end(account_profil) }}
+
+
+
+    </div>
+{% endblock %}
+
+

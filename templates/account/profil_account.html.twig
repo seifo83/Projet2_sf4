@@ -1,0 +1,47 @@
+{% extends "_template.html.twig" %}
+
+{% block title %}Modifier Profile{% endblock %}
+
+{% block content %}
+  
+    <div class="section">
+        <h1 class="box title">
+            {{user.pseudo}}   <i class="fas fa-address-card"></i><br>
+            <small> Bienvenue sur votre profile </small>
+           
+        </h1>
+        {# Formuliare 1: pour modifier Email ou Pseudo  #}
+        
+                {{ form_start(account_profil) }}
+        <div class="columns is-multiline is-desktop">
+            <div class="column">
+                <div class="box">
+                    <h2>Modifier votre Email ou Pseudo</h2>
+                    {{ form_row(account_profil.email, {label: "Adresse Email:"}) }}
+                    {{ form_row(account_profil.pseudo, {label: "Pseudo:"}) }}
+                    <button type="submit" class="button is-primary is-fullwidth">Valider</button>
+
+            {{ form_end(account_profil) }}
+                </div>
+
+            </div>
+                    
+
+        {# Formuliare 2: pour modifier mots de passe  #}
+        <div class="column">
+            <div class="box">
+                {{ form_start(mdp_account) }}
+
+                        <h2>Modifier votre mots de passe</h2>
+                        {{ form_row(mdp_account.plainPassword.first, {label: 'Mot de passe:'}) }}
+                        {{ form_row(mdp_account.plainPassword.second, {label: 'Confirmation votre Mot de passe:'}) }}
+                        <button type="submit" class="button is-primary is-fullwidth">Valider</button>
+                {{ form_end(mdp_account) }}
+
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+

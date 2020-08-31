@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\AccountProfilType;
+use App\Form\MotdepasseAccountType;
 use App\Repository\UserRepository;
 use App\Form\RegistrationFormType;
 use App\Service\EmailSender;
@@ -34,7 +36,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request); 
             on a supprimé  $user = new User(); et dans createForm(RegistrationFormType::class, $user); on supprime $user
             on a fait appel de à l'entity User avec l'objet $user dans le test if directement  $user = $form->getData(); 
-            car dans le formuliare le fichier RegistrationFromType.php on a déclaprer par défaut que l'entité appeler ser User
+            car dans le formuliare le fichier RegistrationFromType.php on a déclarer par défaut que l'entité appeler ser User
             dans la méthode configureOptions()
             $resolver->setDefaults([
             'data_class' => User::class,
@@ -68,7 +70,7 @@ class RegistrationController extends AbstractController
             //récupération des données de formuliare(entité user + mot de passe)
             $user = $form->getData();
             $password = $form->get('plainPassword')->getData();
-
+            
             //hash du mot de passe et création du jeton 
             $user->setPassword($passwordEncoder->encodePassword($user, $password))
                 ->renewToken()
@@ -85,7 +87,7 @@ class RegistrationController extends AbstractController
             $emailSender->sendAccountConfirmationEmail($user);
 
 
-            $this->addFlash('success', 'Vous avez bien été inscrit ! Un email de confirmation vous a été envoyé.');
+            $this->addFlash('success', 'Vous avez bien été inscrit, Un email de confirmation vous a été envoyé.');
 
             return $this->redirectToRoute('home');
         }
@@ -100,7 +102,7 @@ class RegistrationController extends AbstractController
      * @Route("/confirm-account/{id<\d+>}/{token}", name="account_confirmation")
      */
     public function confirmAccount($id, $token, UserRepository $repository)
-    {   
+    {
         //Rechercher de l'utilisateur
         $user = $repository->findOneBY([
             'id' => $id,
@@ -124,6 +126,95 @@ class RegistrationController extends AbstractController
         return $this->redirectToRoute('app_login');
 
     }
+
+    /**
+     * Account de User
+     * @Route("/Profil", name= "account_profil")
+     */
+    public function profilUser(Request $request, UserPasswordEncoderInterface $passwordEncoder, EmailSender $emailSender)
+    {
+        $user = $this->getUser();
+
+        //$id = $user->getId();
+        //$token = $user->getToken();
+      
+        //dd($id);
+
+        $form = $this->createForm(AccountProfilType::class, $user);
+        $form->handleRequest($request);
+
+        $form2 = $this->createForm(MotdepasseAccountType::class, $user);
+        $form2->handleRequest($request);
+
+
+        // Traitement du Formulaire de modification Pseudo ou Email
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $this->manager->flush();
+            $emailSender->sendAccountConfirmationEmail($user);
+            
+            $this->addFlash('success', 'Votre Profile à été mise à jour, Un email de confirmation vous a été envoyé.');
+            return $this->redirectToRoute('home');
+        }
+
+        // Elyes27@gmail
+
+        // Traitement du Formulaire de modification du mots de passe 
+        if($form2->isSubmitted() && $form2->isValid())
+        {
+            //récupération des données de formuliare(entité user + mot de passe)
+            $password = $form2->get('plainPassword')->getData();
+            //dd($password);
+
+            //hash du mot de passe et création du jeton 
+            $user->setPassword($passwordEncoder->encodePassword($user, $password));
+
+
+            //dd($form2);
+            $this->manager->flush();
+            $emailSender->sendAccountConfirmationEmail($user);
+            
+            $this->addFlash('success', 'Votre mots de passe à été mise à jour, Un email de confirmation vous a été envoyé.');
+            return $this->redirectToRoute('home');
+        }
+
+
+
+
+        return $this->render('account/profil_account.html.twig', [
+            'user' => $user,
+            'account_profil' => $form->createView(),
+            'mdp_account' => $form2->createView(),
+        ]);
+    }
+
+
+
+    /**
+     * Modification du compte (Email ou pseudo)
+     * @Route("/modifier-account/{id}", name="account_modification")
+    
+    //public function modifAccount(User $user, Request $request, EntityManagerInterface $em)
+    {
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $em->flush();
+            $this->addFlash('success', 'Votre Profil à été mise à jour, Un email de confirmation vous a été envoyé.');
+            return $this->redirectToRoute('app_login');
+        }
+        $this->addFlash('danger', 'Merci de modifier votre Email ou Pseudo');
+        return $this->render('account/profil_account.html.twig');
+       
+
+
+
+    }
+
+    
+    */
 
 
 
